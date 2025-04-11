@@ -1,11 +1,13 @@
-<div>
-    <div><h1>
+<x-app-layout>
+<div class="bg-slate-50 p-4 grid place-content-center">
+    <div class="grid place-content-center bg-lime-100 p-2">
+        <h1 class="font-extrabold font-Audiowide">
         CERTIFICATE VERIFICATION</h1></div>
         <div>
             <p>
                 This is to testify that this certificate was issued to
             </p>
-                <table>
+                <table class="mb-4">
                     <thead>
                         <tr>
                             <th>Training No</th>
@@ -18,15 +20,15 @@
 
                     </thead>
                     <tbody>
-                        <tr>
-                            <td>
-                            {{ $trainee->trainingId }}
+                        <tr class="bg-yellow-100">
+                            <td class="bg-slate-100 p-2">
+                            {{ $training->trainingId }}
                         </td>
-                        <td>
-                            {{ $trainee->name }}
+                        <td class="bg-green-100 p-2">
+                            {{ $training->firstname }} {{ $training->surname }}
                         </td>
-                        <td>
-                            {{ $trainee->interest }}
+                        <td class="bg-amber-100 p-2">
+                            {{ $training->interest->name }}
                         </td>
                         <td>
                             <img src="{{ asset('storage/img/verified.png') }}" class="p-2 w-12"/>
@@ -37,7 +39,8 @@
                     </tbody>
 
                 </table>
+<a href="/" class="button bg-blue-200 p-2 rounded-lg font-bold text-lg shadow-xl m-2 mt-8">Home</a>
 
-        <x-primary-button name="Home" class="bg-green-600"/>
         </div>
 </div>
+</x-app-layout>

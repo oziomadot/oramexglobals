@@ -20,7 +20,10 @@ export default {
                 sans: ['Figtree', ...defaultTheme.fontFamily.sans],
                 Audiowide: ["Audiowide", "sans-serif"],
                 Sofia: ["Sofia", "sans-serif"],
-                Protest: ["Protest Guerrilla", "sans-serif"]
+                Protest: ["Protest Guerrilla", "sans-serif"],
+                tangerine: ["Tangerine", "sans-serif"],
+                mea: ["Mea Culpa", "serif"],
+                dmserif: ["DM Serif Text", "serif"]
             },
         },
     },

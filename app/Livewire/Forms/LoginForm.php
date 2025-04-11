@@ -12,7 +12,8 @@ use Livewire\Form;
 
 class LoginForm extends Form
 {
-    #[Validate('required|string|email')]
+
+    #[Validate('required|string')]
     public string $email = '';
 
     #[Validate('required|string')]
@@ -28,6 +29,8 @@ class LoginForm extends Form
      */
     public function authenticate(): void
     {
+
+
         $this->ensureIsNotRateLimited();
 
         if (! Auth::attempt($this->only(['email', 'password']), $this->remember)) {

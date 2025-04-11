@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Mail\NewTraining;
 use App\Mail\TrainingRegistration;
 use App\Models\Currentstatus;
 use App\Models\Interest;
@@ -60,9 +61,6 @@ class TrainingController extends Controller
 
 
 
-
-
-
          $request->validate([
 
             'surname' => ['string', 'required'],
@@ -74,17 +72,16 @@ class TrainingController extends Controller
       'currentstatus' => ['required', Rule::exists('currentstatuses', 'id')],
       'interest' => ['required', Rule::exists('interests', 'id')],
         'gender' => ['required', 'boolean'],
-        'certificate' =>['required', 'boolean'],
+        'certificate' =>['nullable', 'boolean'],
 
         ]);
 
-        $registerednumber = Training::count();
 
-if($registerednumber == 100){
 
-    return redirect()->route('home')->with('status', 'Sorry, we have reached the maximum number we need for this training.
-    You can not register for this training. Keep in contact with us for another opportunity. Thanks');
-}else{
+
+
+
+
 
 
     function generateTrainingId() {
@@ -106,7 +103,7 @@ if($registerednumber == 100){
     }
 
 
-    $trainee= Training::create([
+    $training= Training::create([
 
         'trainingId' =>generateTrainingId(),
         'surname' => $request->surname,
@@ -123,32 +120,36 @@ if($registerednumber == 100){
     ]);
 
 
-// dd($trainee);
-// $trainee= Training::findOrFail($request->email);
+    $registerednumber = Training::count();
+    $traineeE = $training->email;
 
-    //  try {
-
-        Mail::to($trainee->email)->send(new TrainingRegistration($trainee));
-
-    //   } catch (\Exception $e) {
-
-    //       return $e->getMessage();
-
-    //       exit;
-    //   }
-
-
-
-
-
- //Whatsapp api
+     //Whatsapp api
 
 $whatsapp_cloud_api = new WhatsAppCloudApi([
     'from_phone_number_id' => '426455123886133',
     'access_token' => 'EAAUm666ervkBOyHlZAYBbip5VmP0pqZChmtqpQtJRENZA3sgv4RvoQaoFaa2sINYLsVMLVEc0W8LV6JWbsr0ZCZCrPCPK5gVoQmhThzvnKCurgAZABvwCrzs8N8ZCobYfvjNJU2CKv6sf1JXBqP7UWSnfjL71WvGDqV1xSft8wHB1aY0SIdjfyAffNviMskAPUTNAZDZD',
 ]);
 
-$whatsapp = $trainee->whatsapp;
+$whatsapp = $training->whatsapp;
+
+// checking the number of registered trainee
+
+    if($registerednumber > 50){
+
+        Mail::to($traineeE)->send(new NewTraining($training));
+
+
+        $whatsapp_cloud_api->sendTemplate($whatsapp, 'new_registration', 'en');
+
+    return redirect()->route('home')->with('status', 'Thank you for registering for this training.
+    It is unfortunate that you will not participate in this present ongoing training.
+    We will keep you informed for other subsequent training. ');
+    }
+    else
+    {
+
+        Mail::to($traineeE)->send(new TrainingRegistration($training));
+
 
 
 //Create component for succeful registeration
@@ -159,13 +160,13 @@ $component_body = [
 
         [
             'type' => 'text',
-            'text' => $trainee->interest['name'],
+            'text' => $training->interest['name'],
 
         ],
 
          [
            'type' => 'text',
-           'text' => $trainee->trainingId,
+           'text' => $training->trainingId,
         ]
 
 
@@ -180,7 +181,7 @@ $whatsapp_cloud_api->sendTemplate($whatsapp, 'training_registeration_successful'
 
 // create for those who want certificate
 
-if($trainee->certificate == 1) {
+if($training->certificate == 1) {
 
     $component_header = [];
 
@@ -190,12 +191,12 @@ if($trainee->certificate == 1) {
 
         [
            'type' => 'text',
-           'text' => $trainee->trainingId,
+           'text' => $training->trainingId,
         ],
 
         [
             'type' => 'text',
-            'text' => $trainee->interest['name'],
+            'text' => $training->interest['name'],
 
         ]
 
@@ -235,7 +236,10 @@ $components = new Component($component_header, $component_body);
      */
     public function update(Request $request, Training $training)
     {
-        //
+
+        $training->update(['subscription' => $request->subscription]);
+
+        return redirect()->route('subscription', $training);
     }
 
     /**

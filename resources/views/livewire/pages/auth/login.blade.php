@@ -30,7 +30,7 @@ $login = function () {
         <!-- Email Address -->
         <div>
             <x-input-label for="email" :value="__('Email')" />
-            <x-text-input wire:model="form.email" id="email" class="block mt-1 w-full" type="email" name="email" required autofocus autocomplete="username" />
+            <x-text-input wire:model="form.email" id="email" class="block mt-1 w-full"  name="email" required autofocus autocomplete="username" />
             <x-input-error :messages="$errors->get('form.email')" class="mt-2" />
         </div>
 
@@ -65,5 +65,19 @@ $login = function () {
                 {{ __('Log in') }}
             </x-primary-button>
         </div>
+        <div class="flex items-center justify-end mt-4 text-white ">
+            Are you new, register by <span> </span>
+            @if (Route::has('registration'))
+            <a class="underline text-sm text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-100 rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 dark:focus:ring-offset-gray-800" href="{{ route('registration') }}" wire:navigate>
+                {{ __('   Clicking here?') }}
+            </a>
+        @endif
+        </div>
     </form>
+
+    <div class="grid place-content-center">
+        <a href="/">
+            <button class="rounded-lg bg-blue-300 p-2 w-20 text-lg font-black">Home</button>
+        </a>
+        </div>
 </div>

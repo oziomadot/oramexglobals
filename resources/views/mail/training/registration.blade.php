@@ -1,13 +1,15 @@
 <x-mail::message>
 # Training Registeration Confirmation
 
+Dear {{ $training->firstname }},
+
 This is to confirm that you registeration for the upcoming training is successful.
 Keep an eye on your email and whatsapp for update.
 
-Training ID: <b> {{ $trainee->id }} </b>
-Interest:  <b> {{ $trainee->interest }} </b>
+Training ID: <b> {{ $training->trainingId }} </b>
+Interest:  <b> {{ $training->interest->name }} </b>
 
-@if($trainee->certificate == 1)
+@if($training->certificate == 1)
 You are interested in getting a certificate at the end of training.
 NB:
 For the certificate, you are required to pay the sum of <b> One thousand, five hundred naira <(N1,500) only into this account details
@@ -29,8 +31,8 @@ Button Text
 
 Thanks,<br>
 
-Okechi Chimezie
-Manager,
+Okechi Chimezie<br>
+Manager,<br>
 Oramex Globals Limited
 {{ config('app.name') }}
 </x-mail::message>

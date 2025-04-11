@@ -18,7 +18,7 @@ class TrainingRegistration extends Mailable
      * Create a new message instance.
      */
     public function __construct(
-        public Training $trainee
+        public Training $training
         )
     {}
 

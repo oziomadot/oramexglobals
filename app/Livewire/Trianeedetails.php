@@ -11,14 +11,14 @@ class Trianeedetails extends Component
 {
     // #[Validate('required')]
     public $details;
-    public $trainee = [];
+    public $training = [];
 
 
     public function search()
     {
         $details = $this->details;
 
-        $this->trainee = Training::where('email', '=', $details)
+        $this->training = Training::where('email', '=', $details)
             ->orWhere('trainingId', '=', $details)
             ->orWhere('phonenumber', '=', $details)
             ->get();
