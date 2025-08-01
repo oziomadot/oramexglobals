@@ -150,7 +150,8 @@ public function mount()
             'whatsapp' => $updateData['whatsapp'],
             'currentstatus_id'=> $updateData['currentstatus'],
             'tribe_id'=>$validatedData['tribe'],
-            'state_of_resident_id' => $validatedData['stateOfResidence']
+            'state_of_resident_id' => $validatedData['stateOfResidence'],
+            'role_id' => $validatedData['stateOfResidence']
 
         ]);
 

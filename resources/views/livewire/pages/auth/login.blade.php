@@ -22,7 +22,7 @@ $login = function () {
 
 ?>
 
-<div>
+<div class="bg-slate-200">
     <!-- Session Status -->
     <x-auth-session-status class="mb-4" :status="session('status')" />
 
@@ -61,11 +61,11 @@ $login = function () {
                 </a>
             @endif
 
-            <x-primary-button class="ms-3">
+            <x-primary-button class="ms-3 bg-cyan-700">
                 {{ __('Log in') }}
             </x-primary-button>
         </div>
-        <div class="flex items-center justify-end mt-4 text-white ">
+        <div class="flex items-center justify-end mt-4 text-black ">
             Are you new, register by <span> </span>
             @if (Route::has('registration'))
             <a class="underline text-sm text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-100 rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 dark:focus:ring-offset-gray-800" href="{{ route('registration') }}" wire:navigate>

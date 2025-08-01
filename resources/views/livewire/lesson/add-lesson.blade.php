@@ -1,6 +1,6 @@
 
 
-    <x-dashboard>
+
 
 <div class="p-4">
     <div class="flex justify-center">
@@ -170,5 +170,5 @@
 
   </div>
 </div>
-</x-dashboard>
+
 

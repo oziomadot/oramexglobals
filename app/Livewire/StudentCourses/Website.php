@@ -35,50 +35,51 @@ class Website extends Component
     public $progress;
 
 
-    public function mount(){
-
-       $this->getProgressProperty();
-
-    //update enrolled
+    public function mount()
+{
+    $this->tutorials = collect();
+    $this->getProgressProperty();
 
     $this->enrolledUser = Enrolled::where('user_id', auth()->id())
-    ->with(['lesson' => function ($query) {
-        $query->latest(); // Get the latest lesson
-    }])
-    ->first();
+        ->with(['lesson' => function ($query) {
+            $query->latest();
+        }])
+        ->first();
 
+    $lastVideoId = $this->enrolledUser?->lesson->first()?->last_watched_video_id;
 
+    if ($lastVideoId) {
+        $lastVideo = Tutorial::find($lastVideoId);
+        $this->currentVideo = $lastVideo;
 
-    $lastVideo = $this->enrolledUser?->lesson->first()?->last_watched_video_id;
+        // 👇 Important: Load the full video collection based on the video's context
+        if ($lastVideo->technology_id) {
+            $this->tutorials = Tutorial::where('technology_id', $lastVideo->technology_id)->orderBy('id')->get();
+        } elseif ($lastVideo->course_id) {
+            $this->tutorials = Tutorial::where('course_id', $lastVideo->course_id)->orderBy('id')->get();
+        } elseif ($lastVideo->path_id) {
+            $this->tutorials = Tutorial::where('path_id', $lastVideo->path_id)->whereNull('course_id')->orderBy('id')->get();
+        }
 
+        // Set current index so "Next" works properly
+        $this->currentIndex = $this->tutorials->pluck('id')->search($lastVideoId) ?? 0;
 
-
-        // $lastVideo = Tutorial::find(auth()->user()->last_watched_video_id);
-
-    if($lastVideo) {
-        $this->currentVideo =Tutorial::where('id', $lastVideo)->first();
-        // $this->currentIndex = $this->currentVideo[];
-        // ->pluck('id')->search($lastVideo->id)
         $this->currentVideo->youtube_url = str_replace("youtu.be/", "www.youtube.com/embed/", $this->currentVideo->youtube_url);
     } else {
+        // No history: start from the beginning of path
         $this->currentIndex = 0;
 
         $this->tutorials = Tutorial::where('path_id', 1)
-                            ->whereNull('course_id')
-                            ->orderBy('id')->get();
-
-                            // dd($this->tutorials);
+            ->whereNull('course_id')
+            ->orderBy('id')->get();
 
         $this->currentVideo = $this->tutorials[$this->currentIndex] ?? null;
-        // ->first();
 
-        // if ($this->tutorials->isNotEmpty()) {
-            // $this->currentVideo = $this->tutorials[$this->currentIndex];
+        if ($this->currentVideo) {
             $this->currentVideo->youtube_url = str_replace("youtu.be/", "www.youtube.com/embed/", $this->currentVideo->youtube_url);
-            // }
         }
-        // $this->currentVideo = $this->tutorials->isNotEmpty() ? $this->tutorials[$this->currentIndex] : null;
     }
+}
 
     public function render()
     {
@@ -94,7 +95,7 @@ class Website extends Component
 
     public function next()
     {
-$this->emitSelf('refreshComponent');
+        $this->dispatch('refreshComponent');
 
 
         if ($this->currentVideo) {
@@ -279,5 +280,18 @@ public function getProgressProperty()
 
 
 }
+
+protected function convertToEmbedUrl($url)
+{
+    // Match YouTube video ID
+    preg_match("/(?:https?:\/\/)?(?:www\.)?(?:youtube\.com\/watch\?v=|youtu\.be\/)([^\s&]+)/", $url, $matches);
+
+    if (isset($matches[1])) {
+        return "https://www.youtube.com/embed/" . $matches[1];
+    }
+
+    return null; // or a fallback video
+}
+
 
 }

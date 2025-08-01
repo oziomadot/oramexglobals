@@ -28,7 +28,7 @@ class AddLesson extends Component
     public $course1;
     public $lessons;
     public $video;
-    public $titles;
+    public $titles = [];
     public $title_id;
     public $new_title;
     public $description;
@@ -87,7 +87,6 @@ public $technology1;
             'extras'=>'nullable|string',
             'title_id' => 'nullable|exists:titles,id',
             'new_title' => 'nullable|string|max:255|unique:titles,name',
-            // extras
 
 
 
@@ -119,17 +118,8 @@ public $technology1;
             $this->title_id = $title->id;
         }
 
-        // $title = Title::where('id', $this->title_id)->get();
 
-        // $filePath = $validateData['video']->store('videos', 'public');
-
-        // $youtubeService = new YouTubeService();
-        // $videoId = $youtubeService->uploadVideo(storage_path("app/public/" . $filePath), $title, $validateData['description']);
-        // // Upload to YouTube
-        // $youtubeId = $this->uploadToYouTube(storage_path("app/public/" . $filePath));
-
-        // if ($videoId) {
-        //     $videoUrl = "https://www.youtube.com/watch?v=" . $videoId;
+        $title = $validateData['title_id']?: $this->title_id;
 
             Tutorial::create([
                 'title_id' => $validateData['title_id'],
@@ -143,7 +133,7 @@ public $technology1;
             // return response()->json(['message' => 'Video uploaded successfully!'], 200);
 
 
-        session()->flash('message', 'Registration successful! Please check your email to verify your account.');
+            session()->flash('status', 'Tutorial successful uploaded! Please continue with the next action');
 
         // Reset form
         $this->reset();
